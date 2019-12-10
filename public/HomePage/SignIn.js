@@ -1,12 +1,25 @@
-import firebase from firebase;
 
+import * as firebase from "./node_modules/firebase/app";
+// If you enabled Analytics in your project, add the Firebase SDK for Analytics
+import "firebase/analytics";
 
-firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+// Add the Firebase products that you want to use
+import "firebase/auth";
+import "firebase/firestore";
+
+const auth = firebase.auth();
+
+const promise = auth.signInWithEmailAndPassword(email, pass);
+auth.createUserWithEmailAndPassword(email, pass);
+
+firebase.auth().onAuthStateChanged()
+
+/*firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
     // ...
-  });
+  });*/
 
   const firebaseConfig = {
     apiKey: "AIzaSyCAcT2Pm-FbZ5D7hQ5pptkRDFr7hgJszgM",
@@ -20,7 +33,7 @@ firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error
   };
   firebase.initializeApp(firebaseConfig);
 
-  firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+  /*firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
@@ -34,12 +47,6 @@ firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error
     //<script type="text/javascript" src="HomePage/SignIn.js"></script>
   });
 
-  firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    // ...
-  });
 
   firebase.auth().signOut().then(function() {
     // Sign-out successful.
@@ -68,4 +75,34 @@ firebase.auth().signInWithPopup(new firebase.authGoogleAuthProvider())
  })
  .catch(function (err) {
    // Handle error
- });
+ });*/
+
+
+ document.getElementById("btnSignUp").addEventListener('click', e=>{
+  const email = document.getElementById("txtEmail").value;
+  const pass = document.getElementById("txtPassword").value;
+  firebase.auth().createUserWithEmailAndPassword(email, pass).catch(function(error) {
+   console.log(error.message);
+  });
+})
+
+
+document.getElementById("btnSignIn").addEventListener('click', e=>{
+  const email = document.getElementById("txtEmail").value;
+  const pass = document.getElementById("txtPassword").value;
+  const promise = firebase.auth().signInWithEmailAndPassword(email, pass);
+  promise.catch(e=>{ console.log(e.massage)})
+})
+
+firebase.auth().onAuthStateChanged(user=>{ 
+  if(user){
+    document.getElementById("btnLogOut").classList.remove('hide')
+  } else{
+    document.getElementById("btnLogOut").classList.add('hide')
+  }
+})
+
+document.getElementById("btnLogOut").addEventListener('click', e=>{
+  firebase.auth().signOut();
+  console.log('logged out')
+})
